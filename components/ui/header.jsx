@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import React from "react";
 import { SignedOut, SignedIn, SignInButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
@@ -7,11 +8,12 @@ import { ChevronDown, FileText, GraduationCap, LayoutDashboard, PenBox, StarsIco
 import { DropdownMenuTrigger } from "./dropdown-menu";
 import { DropdownMenu } from "./dropdown-menu";
 import { DropdownMenuContent } from "./dropdown-menu";
-import { DropdownMenuLabel } from "./dropdown-menu";
 import { DropdownMenuItem } from "./dropdown-menu";
-import { DropdownMenuSeparator } from "./dropdown-menu";
+import { checkUser } from "@/lib/checkUser";
 
-const Header = () => {
+
+const Header =async () => {
+  await checkUser();
   return (
     <header className="fixed top-0 w-full border-b bg-background/80 backdrop-blur-md z-50 supports-backdrop-filter:bg-background/60 ">
       <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
