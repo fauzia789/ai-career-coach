@@ -9,11 +9,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
-
 // ... rest of your models (User, Assessment, etc.) ...
 // ... your models (User, Assessment, etc.) ...
 model User {
