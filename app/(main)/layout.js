@@ -1,7 +1,7 @@
 import React from 'react'
 
 export const MainLayot = ({children}) => {
-//  Redirect user after onbaording 
+//  Redirect to onbaording 
 
 
   return (
