@@ -66,13 +66,11 @@ const OnboardingForm = ({ industries }) => {
   };
 
   useEffect(() => {
-    if (updateResult?.success && !updateLoading) {
+    if (!updateLoading && updateResult?.success) {
       toast.success("Profile completed successfully!");
       router.push("/dashboard");
-      router.refresh();
     }
   }, [updateResult, updateLoading]);
-
   const watchIndustry = watch("industry");
 
   return (
@@ -89,13 +87,71 @@ const OnboardingForm = ({ industries }) => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            {/* ✅ NEW OPTIONAL FIELDS (safe additions) */}
+
+            <div className="space-y-2">
+              <Label htmlFor="jobTitle">Job Title</Label>
+              <Input
+                id="jobTitle"
+                placeholder="e.g. Software Engineer"
+                {...register("jobTitle")}
+              />
+              {errors.jobTitle && (
+                <p className="text-sm text-red-500">
+                  {errors.jobTitle.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="location">Location</Label>
+              <Input
+                id="location"
+                placeholder="e.g. New York, USA"
+                {...register("location")}
+              />
+              {errors.location && (
+                <p className="text-sm text-red-500">
+                  {errors.location.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="website">Website</Label>
+              <Input
+                id="website"
+                placeholder="https://yourwebsite.com"
+                {...register("website")}
+              />
+              {errors.website && (
+                <p className="text-sm text-red-500">{errors.website.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="linkedin">LinkedIn</Label>
+              <Input
+                id="linkedin"
+                placeholder="https://linkedin.com/in/yourname"
+                {...register("linkedin")}
+              />
+              {errors.linkedin && (
+                <p className="text-sm text-red-500">
+                  {errors.linkedin.message}
+                </p>
+              )}
+            </div>
+
+            {/* 🔽 YOUR ORIGINAL FIELDS (UNCHANGED) */}
+
             <div className="space-y-2">
               <Label htmlFor="industry">Industry</Label>
               <Select
                 onValueChange={(value) => {
                   setValue("industry", value);
                   setSelectedIndustry(
-                    industries.find((ind) => ind.id === value)
+                    industries.find((ind) => ind.id === value),
                   );
                   setValue("subIndustry", "");
                 }}

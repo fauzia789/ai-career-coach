@@ -29,6 +29,13 @@ model User {
   experience   Int?
   skills       String[]
 
+  // ✅ NEW FIELDS ADDED (Nothing removed)
+  university        String?
+  department        String?
+  hasExperience     Boolean  @default(false)
+  previousCompany   String?
+  previousJobTitle  String?
+
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -36,7 +43,6 @@ model User {
   resume       Resume?
   coverLetters CoverLetter[]
 }
-
 
 model Assessment {
   id             String    @id @default(cuid())
