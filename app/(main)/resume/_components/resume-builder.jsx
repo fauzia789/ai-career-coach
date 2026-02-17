@@ -23,7 +23,7 @@ import useFetch from "@/hooks/use-fetch";
 import { useUser } from "@clerk/nextjs";
 import { entriesToMarkdown } from "@/app/lib/helper";
 import { resumeSchema } from "@/app/lib/schema";
-import html2pdf from "html2pdf.js/dist/html2pdf.min.js";
+
 
 export default function ResumeBuilder({ initialContent }) {
   const [activeTab, setActiveTab] = useState("edit");
@@ -111,26 +111,39 @@ export default function ResumeBuilder({ initialContent }) {
   };
 
   const [isGenerating, setIsGenerating] = useState(false);
+const generatePDF = async () => {
+  setIsGenerating(true);
 
-  const generatePDF = async () => {
-    setIsGenerating(true);
-    try {
-      const element = document.getElementById("resume-pdf");
-      const opt = {
-        margin: [15, 15],
-        filename: "resume.pdf",
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      };
+  try {
+    const { jsPDF } = await import("jspdf");
 
-      await html2pdf().set(opt).from(element).save();
-    } catch (error) {
-      console.error("PDF generation error:", error);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+    });
+
+    // Convert markdown to plain text
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = document.getElementById("resume-pdf").innerHTML;
+    const text = tempDiv.innerText;
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 15;
+    const maxLineWidth = pageWidth - margin * 2;
+
+    const lines = doc.splitTextToSize(text, maxLineWidth);
+
+    doc.text(lines, margin, 20);
+
+    doc.save("resume.pdf");
+
+  } catch (error) {
+    console.error("PDF generation error:", error);
+  } finally {
+    setIsGenerating(false);
+  }
+};
 
   const onSubmit = async (data) => {
     try {
@@ -401,17 +414,26 @@ export default function ResumeBuilder({ initialContent }) {
               preview={resumeMode}
             />
           </div>
-          <div className="hidden">
-            <div id="resume-pdf">
-              <MDEditor.Markdown
-                source={previewContent}
-                style={{
-                  background: "white",
-                  color: "black",
-                }}
-              />
-            </div>
-          </div>
+          <div
+  style={{
+    position: "absolute",
+    left: "-9999px",
+    top: 0,
+    width: "794px",
+    background: "white",
+    padding: "40px",
+  }}
+>
+  <div id="resume-pdf">
+    <MDEditor.Markdown
+      source={previewContent}
+      style={{
+        background: "white",
+        color: "black",
+      }}
+    />
+  </div>
+</div>
         </TabsContent>
       </Tabs>
     </div>
